@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>体調の記録 使い方ガイド</title>
+<meta name="theme-color" content="#F4F1EA">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+@font-face{font-family:"Zen Maru Gothic";font-style:normal;font-weight:400;font-display:swap;src:url("fonts/ZenMaruGothic-Regular.woff2") format("woff2");}
+@font-face{font-family:"Zen Maru Gothic";font-style:normal;font-weight:500;font-display:swap;src:url("fonts/ZenMaruGothic-Medium.woff2") format("woff2");}
+:root{
+  --bg:#F4F1EA; --card:#FFFDF8; --sage:#6F8F72; --sage-deep:#5A7A5E; --sage-light:#EBF0EA;
+  --text:#4A4A44; --text-sub:#8A867C; --border:#D9D3C7; --line:#EEEAE1;
+  --notice-bg:#F6E6DC; --notice-text:#8A5638;
+}
+*{box-sizing:border-box;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Hiragino Sans",sans-serif;
+  font-weight:400; font-size:15px; line-height:1.95; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:640px; margin:0 auto; padding:calc(20px + env(safe-area-inset-top)) 20px calc(56px + env(safe-area-inset-bottom));}
+.top{display:flex; justify-content:flex-end;}
+.open{
+  display:inline-block; font-size:13px; font-weight:500; color:var(--sage-deep); text-decoration:none;
+  background:var(--sage-light); border-radius:999px; padding:7px 16px;
+}
+header{padding:26px 4px 6px;}
+.kicker{font-size:13px; color:var(--sage-deep); font-weight:500; margin:0;}
+h1{font-size:24px; font-weight:500; line-height:1.5; margin:4px 0 0;}
+.lead{margin:14px 0 0;}
+nav.toc{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px 20px; margin:26px 0 0;}
+nav.toc p{font-size:13px; color:var(--sage-deep); font-weight:500; margin:0 0 4px;}
+nav.toc ol{margin:0; padding-left:1.5em;}
+nav.toc a{color:var(--text); text-decoration:underline; text-decoration-color:var(--border); text-underline-offset:4px;}
+section{margin-top:40px; scroll-margin-top:16px;}
+h2{font-size:18px; font-weight:500; line-height:1.6; margin:0 0 4px; padding:0 4px; display:flex; gap:10px; align-items:baseline;}
+h2 .n{flex:none; font-size:13px; color:var(--sage-deep);}
+.card{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px 20px; margin-top:12px;}
+.card > :first-child{margin-top:0;} .card > :last-child{margin-bottom:0;}
+p{margin:12px 0;}
+section > p{padding:0 4px;}
+ol.steps{margin:0; padding:0; list-style:none; counter-reset:s;}
+ol.steps li{counter-increment:s; position:relative; padding:10px 0 10px 40px; border-bottom:1px solid var(--line);}
+ol.steps li:first-child{padding-top:0;} ol.steps li:last-child{border-bottom:0; padding-bottom:0;}
+ol.steps li::before{
+  content:counter(s); position:absolute; left:0; top:12px; width:26px; height:26px; border-radius:50%;
+  background:var(--sage-light); color:var(--sage-deep); font-size:13px; font-weight:500;
+  display:flex; align-items:center; justify-content:center; line-height:1;
+}
+ol.steps li:first-child::before{top:2px;}
+ul.plain{margin:0; padding-left:1.3em;} ul.plain li{margin:6px 0;}
+.ui{font-weight:500; color:var(--sage-deep); white-space:nowrap;}
+.sub{font-size:13px; color:var(--text-sub);}
+.notice{background:var(--notice-bg); color:var(--notice-text); border-radius:12px; padding:13px 16px; font-size:14px; margin-top:12px;}
+.notice > :first-child{margin-top:0;} .notice > :last-child{margin-bottom:0;}
+/* 画面の見本 */
+.demo{border:1px solid var(--border); border-radius:12px; overflow:hidden; margin:14px 0 4px; background:var(--card);}
+.demo-cap{font-size:12px; color:var(--text-sub); margin:6px 0 0;}
+.demo-row{display:flex; align-items:center; gap:14px; padding:0 18px; min-height:56px; border-bottom:1px solid var(--line); font-size:16px;}
+.demo-row:last-child{border-bottom:0;}
+.demo-row span:first-child{flex:1;}
+.dot{width:24px; height:24px; border-radius:50%; flex:none; border:1.5px solid var(--border); background:var(--sage-light);}
+.dot.on{background:var(--sage); border-color:var(--sage);}
+.demo-toast{display:flex; align-items:center; gap:6px; background:var(--sage-deep); color:var(--card); border-radius:16px; padding:10px 8px 10px 14px; font-size:13px; line-height:1.5; font-weight:500; margin:14px 0 4px; white-space:nowrap;}
+.demo-toast span:first-child{flex:1;}
+.demo-toast .b{background:rgba(255,253,248,.2); border-radius:12px; padding:5px 10px;}
+.demo-toast span:first-child{overflow:hidden; text-overflow:ellipsis;}
+.demo-cal{display:grid; grid-template-columns:repeat(7,1fr); gap:0; padding:10px 8px 12px; text-align:center; font-size:13px;}
+.demo-cal div{padding:5px 0 0; height:44px;}
+.demo-cal i{display:block; width:6px; height:6px; border-radius:50%; background:var(--sage); margin:4px auto 0;}
+dl.qa{margin:0;}
+dl.qa dt{font-weight:500; margin-top:16px; padding-top:16px; border-top:1px solid var(--line);}
+dl.qa dt:first-child{margin-top:0; padding-top:0; border-top:0;}
+dl.qa dd{margin:4px 0 0;}
+footer{margin-top:44px; text-align:center;}
+footer .open{font-size:15px; padding:11px 26px; background:var(--sage-deep); color:var(--card);}
+@media print{
+  body{background:none; font-size:11pt;}
+  .top, footer, nav.toc{display:none;}
+  .wrap{max-width:none; padding:0;}
+  .card{break-inside:avoid;} h2{break-after:avoid;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top"><a class="open" href="./">アプリを開く</a></div>
+
+<header>
+  <p class="kicker">体調の記録</p>
+  <h1>使い方ガイド</h1>
+  <p class="lead">体調や症状で気になることがあったときに、タップするだけで記録を残せるアプリです。後から「いつから」「どのくらいの頻度で」と聞かれたときに、答えられるようにするためのものです。</p>
+</header>
+
+<nav class="toc" aria-label="目次">
+  <p>目次</p>
+  <ol>
+    <li><a href="#about">このアプリの考え方</a></li>
+    <li><a href="#home">はじめに：ホーム画面に追加する</a></li>
+    <li><a href="#record">記録する</a></li>
+    <li><a href="#append">詳しい内容を追記する</a></li>
+    <li><a href="#items">項目を追加する</a></li>
+    <li><a href="#calendar">記録を見返す</a></li>
+    <li><a href="#output">受診のときに見せる</a></li>
+    <li><a href="#settings">使いやすく整える</a></li>
+    <li><a href="#backup">記録を守る</a></li>
+    <li><a href="#faq">困ったとき</a></li>
+  </ol>
+</nav>
+
+<section id="about">
+  <h2><span class="n">1</span>このアプリの考え方</h2>
+  <div class="card">
+    <ul class="plain">
+      <li>毎日記録する必要はありません。気になることがあったときだけ開いてください</li>
+      <li>何を記録すればよいか分からなくても始められます。最初は「体調の変化」をタップするだけで十分です</li>
+      <li>記録のない日は「症状がなかった日」という意味ではありません。記録しなかった日も含まれます</li>
+      <li>アプリが体調を評価したり、受診をすすめたりすることはありません。記録を残すところまでがアプリの役目です</li>
+    </ul>
+  </div>
+</section>
+
+<section id="home">
+  <h2><span class="n">2</span>はじめに：ホーム画面に追加する</h2>
+  <p>最初に、アプリをホーム画面に追加してください。追加すると、ほかのアプリと同じようにアイコンから開けます。</p>
+  <div class="card">
+    <p class="sub">iPhoneの場合</p>
+    <ol class="steps">
+      <li>Safariでアプリのページを開きます</li>
+      <li>画面の共有ボタン（四角から矢印が出ているマーク）をタップします</li>
+      <li><span class="ui">ホーム画面に追加</span> をタップします</li>
+      <li>ホーム画面にできたアイコンから開きます</li>
+    </ol>
+  </div>
+  <div class="card">
+    <p class="sub">Androidの場合</p>
+    <ol class="steps">
+      <li>Chromeでアプリのページを開きます</li>
+      <li>右上のメニューから <span class="ui">ホーム画面に追加</span> をタップします</li>
+      <li>ホーム画面にできたアイコンから開きます</li>
+    </ol>
+  </div>
+  <div class="notice">
+    <p>iPhoneでは、ホーム画面に追加せずSafariで開いたまま使うと、7日間使わなかったときに記録が消えることがあります。必ずホーム画面のアイコンから使ってください。</p>
+  </div>
+</section>
+
+<section id="record">
+  <h2><span class="n">3</span>記録する</h2>
+  <p><span class="ui">記録</span> タブで、当てはまる項目をタップします。それだけで記録されます。</p>
+  <div class="card">
+    <div class="demo" aria-hidden="true">
+      <div class="demo-row"><span>体調の変化</span><span class="dot on"></span></div>
+      <div class="demo-row"><span>咳</span><span class="dot"></span></div>
+    </div>
+    <p class="demo-cap">項目をタップすると、右の丸に色がつきます</p>
+    <div class="demo-toast" aria-hidden="true"><span>体調の変化 を記録しました</span><span class="b">追記する</span><span>✕</span></div>
+    <p class="demo-cap">画面の下に、記録したことを知らせる表示が出ます</p>
+    <p>記録には、タップした日時が自動で残ります。そのままアプリを閉じてかまいません。</p>
+    <p>同じ項目を1日に何度タップしてもかまいません。タップした回数だけ記録されます。</p>
+  </div>
+</section>
+
+<section id="append">
+  <h2><span class="n">4</span>詳しい内容を追記する</h2>
+  <p>記録した後に、気づいたことを書き足せます。書かなくても記録は残ります。</p>
+  <div class="card">
+    <ol class="steps">
+      <li>記録した直後に画面の下に出る <span class="ui">追記する</span> をタップします</li>
+      <li><span class="ui">気づいた変化・症状など</span> の欄に入力します</li>
+      <li><span class="ui">更新する</span> をタップすると保存されます</li>
+    </ol>
+  </div>
+  <div class="card">
+    <p><strong style="font-weight:500">後から思い出して記録するとき</strong></p>
+    <p>「そういえば3日前から」と気づいたときは、まず項目をタップして記録し、追記の画面で <span class="ui">症状があった日</span> を変更して <span class="ui">更新する</span> をタップします。</p>
+    <p>カレンダーでは変更した日に表示されます。実際に登録した日も別に残るので、後から振り返って記録したものだと分かります。</p>
+  </div>
+  <div class="notice">
+    <p>入力した内容は <span class="ui" style="color:inherit">更新する</span> をタップするまで保存されません。保存せずに閉じようとすると、確認が表示されます。</p>
+  </div>
+</section>
+
+<section id="items">
+  <h2><span class="n">5</span>項目を追加する</h2>
+  <p>記録を続けるうちに、よく起きる症状が分かってきたら、項目として追加できます。</p>
+  <div class="card">
+    <ol class="steps">
+      <li><span class="ui">記録</span> タブの項目の下にある入力欄に、症状や部位の名前を入力します</li>
+      <li><span class="ui">追加</span> をタップします</li>
+    </ol>
+    <p>「咳」「頭痛」のようなはっきりしたものでも、「落ち着かない感じ」「なんとなく不快」のような曖昧なものでもかまいません。</p>
+  </div>
+</section>
+
+<section id="calendar">
+  <h2><span class="n">6</span>記録を見返す</h2>
+  <p><span class="ui">カレンダー</span> タブでは、記録がある日に点が表示されます。</p>
+  <div class="card">
+    <div class="demo" aria-hidden="true">
+      <div class="demo-cal">
+        <div>8</div><div>9<i></i></div><div>10<i></i></div><div>11</div><div>12</div><div>13<i></i></div><div>14</div>
+      </div>
+    </div>
+    <p class="demo-cap">点がある日は、その日に記録があります</p>
+    <ul class="plain">
+      <li>日付をタップすると、その日の記録が下に表示されます</li>
+      <li>表示された記録をタップすると、追記や日付の変更、記録の削除ができます</li>
+    </ul>
+  </div>
+</section>
+
+<section id="output">
+  <h2><span class="n">7</span>受診のときに見せる</h2>
+  <p><span class="ui">出力</span> タブで、記録を一覧にまとめられます。</p>
+  <div class="card">
+    <ol class="steps">
+      <li><span class="ui">期間</span> を選びます。「期間を指定」では開始日と終了日を選べます</li>
+      <li>必要なら <span class="ui">項目</span> を選んで絞り込みます</li>
+      <li><span class="ui">PDFを作成</span> をタップします</li>
+      <li>共有の画面が開いたら、「ファイルに保存」や「プリント」を選びます</li>
+    </ol>
+    <p>画面をそのまま見せてもかまいません。<span class="ui">テキストとしてコピー</span> をタップすると、メモやメールに貼り付けられます。</p>
+  </div>
+  <div class="card">
+    <p><strong style="font-weight:500">一覧の見方</strong></p>
+    <ul class="plain">
+      <li>「記録の件数」は、アプリに残した記録の数です。実際に症状が起きた回数とは限りません</li>
+      <li>日付の下に「（2026/11/07登録）」のような表示がある記録は、後から日付を変更して登録したものです</li>
+    </ul>
+  </div>
+</section>
+
+<section id="settings">
+  <h2><span class="n">8</span>使いやすく整える</h2>
+  <p><span class="ui">設定</span> タブで、使い方に合わせて変更できます。どれも、記録に慣れてからで大丈夫です。</p>
+  <div class="card">
+    <dl class="qa">
+      <dt>記録した後の動き</dt>
+      <dd>タップしてそのまま終わるか、続けて追記の画面を開くかを選べます</dd>
+      <dt>記録タブの項目の並び順</dt>
+      <dd>最近記録した項目を上に出すか、自分で並べた順にするかを選べます</dd>
+      <dt>項目</dt>
+      <dd>項目名をタップすると名前を変更できます。使わなくなった項目は非表示にできます。記録が0件の項目は削除できます</dd>
+      <dt>カテゴリ</dt>
+      <dd>項目が増えたときに、探しやすいように分けておけます</dd>
+    </dl>
+  </div>
+  <div class="notice">
+    <p>項目の名前を変えると、過去の記録の表示も新しい名前に変わります。別の症状として記録したい場合は、名前を変えずに新しい項目を追加してください。</p>
+  </div>
+</section>
+
+<section id="backup">
+  <h2><span class="n">9</span>記録を守る</h2>
+  <p>記録は、お使いの端末の中だけに保存されます。外部に送信されることはありません。</p>
+  <div class="card">
+    <p>そのかわり、端末の中の記録が消えると元に戻せません。ときどきバックアップを保存してください。</p>
+    <ol class="steps">
+      <li><span class="ui">設定</span> タブのいちばん下にある <span class="ui">バックアップを保存</span> をタップします</li>
+      <li>共有の画面が開いたら、「ファイルに保存」などを選んで保存します</li>
+    </ol>
+    <p>戻すときは <span class="ui">バックアップから戻す</span> をタップして、保存したファイルを選びます。現在の記録は、バックアップの内容に置き換わります。</p>
+  </div>
+  <div class="notice">
+    <p>ホーム画面からアプリのアイコンを削除すると、記録も一緒に消えます。機種変更やアイコンの削除の前には、必ずバックアップを保存してください。</p>
+  </div>
+</section>
+
+<section id="faq">
+  <h2><span class="n">10</span>困ったとき</h2>
+  <div class="card">
+    <dl class="qa">
+      <dt>間違えてタップしてしまった</dt>
+      <dd>直後なら <span class="ui">追記する</span> をタップし、<span class="ui">記録を削除</span> で消せます。後からなら、カレンダーで日付をタップして記録を開くと削除できます</dd>
+      <dt>昨日の分を記録したい</dt>
+      <dd>項目をタップして記録した後、追記の画面で <span class="ui">症状があった日</span> を昨日に変更して <span class="ui">更新する</span> をタップします</dd>
+      <dt>項目が増えて探しにくい</dt>
+      <dd>設定タブで、使わなくなった項目を非表示にできます。過去の記録は消えません</dd>
+      <dt>電波のない場所でも使える？</dt>
+      <dd>一度開いたことがあれば、電波がなくても開いて記録できます</dd>
+      <dt>別の端末でも同じ記録を見たい</dt>
+      <dd>記録は端末ごとに保存されます。バックアップを保存して、もう一方の端末で「バックアップから戻す」と移せます</dd>
+    </dl>
+  </div>
+</section>
+
+<footer><a class="open" href="./">アプリを開く</a></footer>
+
+</div>
+</body>
+</html>

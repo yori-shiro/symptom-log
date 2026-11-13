@@ -1,8 +1,9 @@
 /* 体調の記録：一度開けば電波のない場所でも開けるようにする */
-const CACHE = "taicho-kiroku-cache-v2";
+const CACHE = "taicho-kiroku-cache-v3";
 const ASSETS = [
   "./",
   "./index.html",
+  "./guide.html",
   "./apple-touch-icon.png",
   "./fonts/ZenMaruGothic-Regular.woff2",
   "./fonts/ZenMaruGothic-Medium.woff2",
