@@ -1,5 +1,5 @@
 /* 体調の記録：一度開けば電波のない場所でも開けるようにする */
-const CACHE = "taicho-kiroku-cache-v1";
+const CACHE = "taicho-kiroku-cache-v2";
 const ASSETS = [
   "./",
   "./index.html",
